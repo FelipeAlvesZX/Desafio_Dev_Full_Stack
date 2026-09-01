@@ -5,7 +5,6 @@ import com.desafio.lanchonete.bebida.dto.BebidaRequest;
 import com.desafio.lanchonete.bebida.dto.BebidaResponse;
 import com.desafio.lanchonete.shared.exception.RecursoNaoEncontradoException;
 import com.desafio.lanchonete.shared.exception.RegraDeNegocioException;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +32,7 @@ public class BebidaService {
     }
 
     @Transactional
-    public BebidaResponse criar(@Valid BebidaRequest req) {
+    public BebidaResponse criar(BebidaRequest req) {
         String codigo = resolverCodigo(req.codigo(), null);
         Bebida salva = repository.save(mapper.paraBebida(req, codigo));
         return mapper.paraBebidaResponse(salva);
