@@ -1,0 +1,26 @@
+<div class="page-header">
+  <h1>Ingredientes</h1>
+</div>
+
+<app-tabela-pesquisa
+  [colunas]="colunas"
+  [dados]="ingredientes()"
+  [termo]="termo()"
+  [carregando]="carregando()"
+  textoVazio="Nenhum ingrediente cadastrado."
+  (termoChange)="buscar($event)"
+  (novo)="novo()"
+  [acoesTemplate]="acoes" />
+
+<ng-template #acoes let-ing>
+  <div class="row-end">
+    <button type="button" class="btn btn-secondary btn-sm" (click)="editar(ing)">Editar</button>
+    <button type="button" class="btn btn-danger btn-sm" (click)="paraExcluir.set(ing)">Excluir</button>
+  </div>
+</ng-template>
+
+<app-confirmacao-dialog
+  [aberto]="paraExcluir() !== null"
+  [mensagem]="'Excluir o ingrediente ' + (paraExcluir()?.codigo ?? '') + '?'"
+  (confirmar)="confirmarExclusao()"
+  (cancelar)="paraExcluir.set(null)" />

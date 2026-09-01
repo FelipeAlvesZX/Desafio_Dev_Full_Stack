@@ -1,0 +1,53 @@
+<div class="page-header">
+  <h1>Pedidos</h1>
+</div>
+
+<div class="search-bar">
+  <input type="text" class="form-control" placeholder="Buscar por código, descrição ou cliente..."
+         [value]="termo()" (input)="buscar($any($event.target).value)" />
+  <button type="button" class="btn btn-primary" (click)="novo()">Novo pedido</button>
+</div>
+
+<div class="table-wrapper">
+  <div class="table-scroll">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Data</th>
+          <th>Cliente</th>
+          <th class="col-numero">Total</th>
+          <th class="col-acoes">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (carregando()) {
+          <tr><td colspan="5" class="table-empty">Carregando...</td></tr>
+        } @else {
+          @for (p of pedidos(); track p.id) {
+            <tr>
+              <td>{{ p.codigo }}</td>
+              <td>{{ p.dataPedido | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ p.clienteNome }}</td>
+              <td class="col-numero">{{ p.valorTotal | moedaBr }}</td>
+              <td class="col-acoes">
+                <div class="row-end">
+                  <button type="button" class="btn btn-secondary btn-sm" (click)="editar(p)">Abrir</button>
+                  <button type="button" class="btn btn-danger btn-sm" (click)="paraExcluir.set(p)">Excluir</button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="table-empty">Nenhum pedido lançado.</td></tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<app-confirmacao-dialog
+  [aberto]="paraExcluir() !== null"
+  [mensagem]="'Excluir o pedido ' + (paraExcluir()?.codigo ?? '') + '?'"
+  (confirmar)="confirmarExclusao()"
+  (cancelar)="paraExcluir.set(null)" />

@@ -1,0 +1,231 @@
+<div class="page-header">
+  <h1>{{ id() ? 'Pedido ' + codigo() : 'Novo pedido' }}</h1>
+</div>
+
+<form class="stack" [formGroup]="form" (ngSubmit)="salvar()">
+
+  <div class="card">
+    <h2 class="card__title">Identificação</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label class="form-label">Código</label>
+        <input class="form-control" [value]="codigo() || 'Gerado automaticamente ao salvar'" disabled />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Data do pedido</label>
+        <input class="form-control"
+               [value]="(dataPedido() | date: 'dd/MM/yyyy HH:mm') || (agora | date: 'dd/MM/yyyy HH:mm')"
+               disabled />
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="card__title">Dados do cliente</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label class="form-label" for="nome">Nome <span class="obrigatorio">*</span></label>
+        <input id="nome" class="form-control" formControlName="clienteNome"
+               [class.is-invalid]="invalido('clienteNome')" />
+        <span class="form-error">@if (invalido('clienteNome')) { Nome é obrigatório. }</span>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="telefone">Telefone <span class="obrigatorio">*</span></label>
+        <input id="telefone" class="form-control" formControlName="clienteTelefone"
+               [class.is-invalid]="invalido('clienteTelefone')" placeholder="(18) 99999-0000" />
+        <span class="form-error">@if (invalido('clienteTelefone')) { Telefone é obrigatório. }</span>
+      </div>
+
+      <div class="form-field form-field--full">
+        <label class="form-label" for="endereco">Endereço <span class="obrigatorio">*</span></label>
+        <input id="endereco" class="form-control" formControlName="clienteEndereco"
+               [class.is-invalid]="invalido('clienteEndereco')" />
+        <span class="form-error">@if (invalido('clienteEndereco')) { Endereço é obrigatório. }</span>
+      </div>
+
+      <div class="form-field form-field--full">
+        <label class="form-label" for="descricao">Descrição do pedido</label>
+        <input id="descricao" class="form-control" formControlName="descricao"
+               placeholder="Ex.: pedido balcão, entrega, retirada..." />
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="card__title">Hambúrgueres</h2>
+    <div class="search-bar">
+      <select class="form-control" [value]="hamburguerSelecionado() ?? ''"
+              (change)="hamburguerSelecionado.set($any($event.target).value)">
+        <option value="">Selecione um hambúrguer...</option>
+        @for (h of hamburgueres(); track h.id) {
+          <option [value]="h.id">{{ h.codigo }} — {{ h.descricao }} ({{ h.valor | moedaBr }})</option>
+        }
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="adicionarHamburguer()">Adicionar</button>
+    </div>
+
+    @if (itensHamburguer().length > 0) {
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr><th>Item</th><th class="col-numero">Unit.</th><th class="col-numero">Qtd</th>
+                <th class="col-numero">Subtotal</th><th class="col-acoes"></th></tr>
+          </thead>
+          <tbody>
+            @for (i of itensHamburguer(); track i.itemId) {
+              <tr>
+                <td>{{ i.codigo }} — {{ i.descricao }}</td>
+                <td class="col-numero">{{ i.precoUnitario | moedaBr }}</td>
+                <td class="col-numero">
+                  <div class="row-end">
+                    <button type="button" class="btn btn-ghost btn-icon" (click)="alterarQuantidade('hamburguer', i.itemId, -1)">−</button>
+                    <span>{{ i.quantidade }}</span>
+                    <button type="button" class="btn btn-ghost btn-icon" (click)="alterarQuantidade('hamburguer', i.itemId, 1)">+</button>
+                  </div>
+                </td>
+                <td class="col-numero">{{ i.precoUnitario * i.quantidade | moedaBr }}</td>
+                <td class="col-acoes">
+                  <button type="button" class="btn btn-danger btn-sm" (click)="remover('hamburguer', i.itemId)">Remover</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="text-muted">Nenhum hambúrguer adicionado.</p>
+    }
+  </div>
+
+  <div class="card">
+    <h2 class="card__title">Bebidas</h2>
+    <div class="search-bar">
+      <select class="form-control" [value]="bebidaSelecionada() ?? ''"
+              (change)="bebidaSelecionada.set($any($event.target).value)">
+        <option value="">Selecione uma bebida...</option>
+        @for (b of bebidas(); track b.id) {
+          <option [value]="b.id">{{ b.codigo }} — {{ b.descricao }} ({{ b.precoUnitario | moedaBr }})</option>
+        }
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="adicionarBebida()">Adicionar</button>
+    </div>
+
+    @if (itensBebida().length > 0) {
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr><th>Item</th><th class="col-numero">Unit.</th><th class="col-numero">Qtd</th>
+                <th class="col-numero">Subtotal</th><th class="col-acoes"></th></tr>
+          </thead>
+          <tbody>
+            @for (i of itensBebida(); track i.itemId) {
+              <tr>
+                <td>{{ i.codigo }} — {{ i.descricao }}</td>
+                <td class="col-numero">{{ i.precoUnitario | moedaBr }}</td>
+                <td class="col-numero">
+                  <div class="row-end">
+                    <button type="button" class="btn btn-ghost btn-icon" (click)="alterarQuantidade('bebida', i.itemId, -1)">−</button>
+                    <span>{{ i.quantidade }}</span>
+                    <button type="button" class="btn btn-ghost btn-icon" (click)="alterarQuantidade('bebida', i.itemId, 1)">+</button>
+                  </div>
+                </td>
+                <td class="col-numero">{{ i.precoUnitario * i.quantidade | moedaBr }}</td>
+                <td class="col-acoes">
+                  <button type="button" class="btn btn-danger btn-sm" (click)="remover('bebida', i.itemId)">Remover</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="text-muted">Nenhuma bebida adicionada.</p>
+    }
+  </div>
+
+  <div class="card">
+    <h2 class="card__title">Adicionais</h2>
+    <p class="form-hint">Somente ingredientes habilitados como adicional aparecem aqui.</p>
+
+    <div class="search-bar">
+      <select class="form-control" [value]="adicionalSelecionado() ?? ''"
+              (change)="adicionalSelecionado.set($any($event.target).value)">
+        <option value="">Selecione um adicional...</option>
+        @for (a of adicionaisDisponiveis(); track a.id) {
+          <option [value]="a.id">{{ a.codigo }} — {{ a.descricao }} ({{ a.precoUnitario | moedaBr }})</option>
+        }
+      </select>
+      <button type="button" class="btn btn-secondary" (click)="adicionarAdicional()">Adicionar</button>
+    </div>
+
+    @if (itensAdicional().length > 0) {
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr><th>Item</th><th class="col-numero">Unit.</th><th class="col-numero">Qtd</th>
+                <th class="col-numero">Subtotal</th><th class="col-acoes"></th></tr>
+          </thead>
+          <tbody>
+            @for (i of itensAdicional(); track i.itemId) {
+              <tr>
+                <td>{{ i.codigo }} — {{ i.descricao }}</td>
+                <td class="col-numero">{{ i.precoUnitario | moedaBr }}</td>
+                <td class="col-numero">
+                  <div class="row-end">
+                    <button type="button" class="btn btn-ghost btn-icon" (click)="alterarQuantidade('adicional', i.itemId, -1)">−</button>
+                    <span>{{ i.quantidade }}</span>
+                    <button type="button" class="btn btn-ghost btn-icon" (click)="alterarQuantidade('adicional', i.itemId, 1)">+</button>
+                  </div>
+                </td>
+                <td class="col-numero">{{ i.precoUnitario * i.quantidade | moedaBr }}</td>
+                <td class="col-acoes">
+                  <button type="button" class="btn btn-danger btn-sm" (click)="remover('adicional', i.itemId)">Remover</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="text-muted">Nenhum adicional lançado.</p>
+    }
+  </div>
+
+  <div class="card">
+    <h2 class="card__title">Observações</h2>
+    <div class="search-bar">
+      <input class="form-control" placeholder='Ex.: "sem cebola", "entregar até 20h"'
+             [value]="novaObservacao()"
+             (input)="novaObservacao.set($any($event.target).value)"
+             (keydown.enter)="$event.preventDefault(); adicionarObservacao()" />
+      <button type="button" class="btn btn-secondary" (click)="adicionarObservacao()">Adicionar</button>
+    </div>
+
+    @if (observacoes().length > 0) {
+      <div class="stack">
+        @for (obs of observacoes(); track $index) {
+          <div class="row">
+            <span class="badge badge-neutral">{{ $index + 1 }}</span>
+            <span style="flex:1">{{ obs }}</span>
+            <button type="button" class="btn btn-ghost btn-sm" (click)="removerObservacao($index)">Remover</button>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="text-muted">Nenhuma observação.</p>
+    }
+  </div>
+
+  <div class="total-box">
+    <span class="total-box__label">Valor total do pedido</span>
+    <span class="total-box__valor">{{ valorTotal() | moedaBr }}</span>
+  </div>
+
+  <div class="form-actions">
+    <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+    <button type="submit" class="btn btn-primary" [disabled]="salvando()">
+      {{ salvando() ? 'Salvando...' : 'Salvar pedido' }}
+    </button>
+  </div>
+</form>

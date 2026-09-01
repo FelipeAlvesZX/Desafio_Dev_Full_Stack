@@ -1,0 +1,26 @@
+<div class="page-header">
+  <h1>Bebidas</h1>
+</div>
+
+<app-tabela-pesquisa
+  [colunas]="colunas"
+  [dados]="bebidas()"
+  [termo]="termo()"
+  [carregando]="carregando()"
+  textoVazio="Nenhuma bebida cadastrada."
+  (termoChange)="buscar($event)"
+  (novo)="novo()"
+  [acoesTemplate]="acoes" />
+
+<ng-template #acoes let-bebida>
+  <div class="row-end">
+    <button type="button" class="btn btn-secondary btn-sm" (click)="editar(bebida)">Editar</button>
+    <button type="button" class="btn btn-danger btn-sm" (click)="paraExcluir.set(bebida)">Excluir</button>
+  </div>
+</ng-template>
+
+<app-confirmacao-dialog
+  [aberto]="paraExcluir() !== null"
+  [mensagem]="'Excluir a bebida ' + (paraExcluir()?.codigo ?? '') + '? Esta ação não poderá ser desfeita.'"
+  (confirmar)="confirmarExclusao()"
+  (cancelar)="paraExcluir.set(null)" />

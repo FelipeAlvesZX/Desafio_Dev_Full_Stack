@@ -1,0 +1,28 @@
+@if (aberto()) {
+  <div class="dialog-backdrop" (click)="cancelar.emit()">
+    <div class="dialog-card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+      <div class="dialog-header">
+        <h3 class="dialog-title">{{ titulo() }}</h3>
+        <button type="button" class="btn btn-ghost btn-icon" (click)="cancelar.emit()" aria-label="Fechar">
+          &times;
+        </button>
+      </div>
+
+      <p class="dialog-message">{{ mensagem() }}</p>
+
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancelar.emit()">
+          {{ textoCancelar() }}
+        </button>
+        <button
+          type="button"
+          class="btn"
+          [class.btn-danger]="perigoso()"
+          [class.btn-primary]="!perigoso()"
+          (click)="confirmar.emit()">
+          {{ textoConfirmar() }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

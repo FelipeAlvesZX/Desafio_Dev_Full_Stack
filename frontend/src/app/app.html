@@ -1,0 +1,23 @@
+<header class="app-header">
+  <div class="app-header__inner">
+    <span class="app-brand">Lanchonete</span>
+    <nav class="app-nav">
+      <a routerLink="/pedidos" routerLinkActive="active">Pedidos</a>
+      <a routerLink="/hamburgueres" routerLinkActive="active">Hambúrgueres</a>
+      <a routerLink="/bebidas" routerLinkActive="active">Bebidas</a>
+      <a routerLink="/ingredientes" routerLinkActive="active">Ingredientes</a>
+    </nav>
+  </div>
+</header>
+
+<main class="app-container">
+  <router-outlet />
+</main>
+
+<div class="toast-stack">
+  @for (n of notificacao.notificacoes(); track n.id) {
+    <div class="toast" [class.toast--sucesso]="n.tipo === 'sucesso'" [class.toast--erro]="n.tipo === 'erro'" [class.toast--aviso]="n.tipo === 'aviso'" (click)="notificacao.remover(n.id)">
+      {{ n.mensagem }}
+    </div>
+  }
+</div>

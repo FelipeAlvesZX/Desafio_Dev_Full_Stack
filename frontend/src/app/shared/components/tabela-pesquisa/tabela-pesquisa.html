@@ -1,0 +1,70 @@
+<div class="search-bar">
+  <input
+    type="text"
+    class="form-control"
+    [placeholder]="placeholder()"
+    [value]="termo()"
+    (input)="aoDigitar($any($event.target).value)" />
+  <button type="button" class="btn btn-primary" (click)="novo.emit()">{{ rotuloNovo() }}</button>
+</div>
+
+<div class="table-wrapper">
+  <div class="table-scroll">
+    <table class="data-table">
+      <thead>
+        <tr>
+          @for (coluna of colunas(); track coluna.campo) {
+            <th [class.col-numero]="alinhaDireita(coluna)">{{ coluna.titulo }}</th>
+          }
+          @if (acoesTemplate()) {
+            <th class="col-acoes">Ações</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @if (carregando()) {
+          <tr>
+            <td [attr.colspan]="colunas().length + (acoesTemplate() ? 1 : 0)" class="table-empty">
+              Carregando...
+            </td>
+          </tr>
+        } @else {
+          @for (linha of dados(); track $index) {
+            <tr>
+              @for (coluna of colunas(); track coluna.campo) {
+                <td [class.col-numero]="alinhaDireita(coluna)">
+                  @switch (coluna.formato) {
+                    @case ('moeda') {
+                      {{ numeroDe(linha, coluna.campo) | moedaBr }}
+                    }
+                    @case ('booleano') {
+                      @if (boolDe(linha, coluna.campo)) {
+                        <span class="badge badge-success">{{ rotuloSim(coluna) }}</span>
+                      } @else {
+                        <span class="badge badge-neutral">{{ rotuloNao(coluna) }}</span>
+                      }
+                    }
+                    @default {
+                      {{ valor(linha, coluna.campo) }}
+                    }
+                  }
+                </td>
+              }
+              @if (acoesTemplate(); as tpl) {
+                <td class="col-acoes">
+                  <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: linha }" />
+                </td>
+              }
+            </tr>
+          } @empty {
+            <tr>
+              <td [attr.colspan]="colunas().length + (acoesTemplate() ? 1 : 0)" class="table-empty">
+                {{ textoVazio() }}
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
