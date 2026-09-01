@@ -1,13 +1,14 @@
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MascaraCodigoDirective } from '../../../shared/directives/mascara-codigo.directive';
 import { NotificacaoService } from '../../../core/services/notificacao.service';
 import { BebidaService } from '../bebida.service';
 
 @Component({
   selector: 'app-bebida-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, MascaraCodigoDirective],
   templateUrl: './bebida-form.html',
   styleUrl: './bebida-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

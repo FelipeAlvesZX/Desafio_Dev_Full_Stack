@@ -32,7 +32,7 @@
 
       <div class="form-field">
         <label class="form-label" for="telefone">Telefone <span class="obrigatorio">*</span></label>
-        <input id="telefone" class="form-control" formControlName="clienteTelefone"
+        <input id="telefone" class="form-control" formControlName="clienteTelefone" appMascaraTelefone maxlength="15"
                [class.is-invalid]="invalido('clienteTelefone')" placeholder="(18) 99999-0000" />
         <span class="form-error">@if (invalido('clienteTelefone')) { Telefone é obrigatório. }</span>
       </div>

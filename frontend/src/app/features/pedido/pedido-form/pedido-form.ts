@@ -2,6 +2,7 @@ import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@a
 import { DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MascaraTelefoneDirective } from '../../../shared/directives/mascara-telefone.directive';
 import { MoedaBrPipe } from '../../../shared/pipes/moeda-br-pipe';
 import { NotificacaoService } from '../../../core/services/notificacao.service';
 import { PedidoService } from '../pedido.service';
@@ -23,7 +24,7 @@ interface LinhaItem {
 @Component({
   selector: 'app-pedido-form',
   standalone: true,
-  imports: [ReactiveFormsModule, MoedaBrPipe, DatePipe],
+  imports: [ReactiveFormsModule, MoedaBrPipe, DatePipe, MascaraTelefoneDirective],
   templateUrl: './pedido-form.html',
   styleUrl: './pedido-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -6,7 +6,7 @@
   <div class="form-grid">
     <div class="form-field">
       <label class="form-label" for="codigo">Código</label>
-      <input id="codigo" class="form-control" formControlName="codigo"
+      <input id="codigo" class="form-control" formControlName="codigo" appMascaraCodigo maxlength="8"
              [class.is-invalid]="invalido('codigo')" placeholder="ABC-0000" />
       <span class="form-hint">Deixe em branco para gerar automaticamente.</span>
       <span class="form-error">

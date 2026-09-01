@@ -1,6 +1,7 @@
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MascaraCodigoDirective } from '../../../shared/directives/mascara-codigo.directive';
 import { MoedaBrPipe } from '../../../shared/pipes/moeda-br-pipe';
 import { NotificacaoService } from '../../../core/services/notificacao.service';
 import { HamburguerService } from '../hamburguer.service';
@@ -10,7 +11,7 @@ import { Ingrediente } from '../../../core/models/ingrediente.model';
 @Component({
   selector: 'app-hamburguer-form',
   standalone: true,
-  imports: [ReactiveFormsModule, MoedaBrPipe],
+  imports: [ReactiveFormsModule, MoedaBrPipe, MascaraCodigoDirective],
   templateUrl: './hamburguer-form.html',
   styleUrl: './hamburguer-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
