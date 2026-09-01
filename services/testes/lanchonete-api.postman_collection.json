@@ -1,0 +1,872 @@
+{
+  "info": {
+    "name": "Desafio Salutem - Lanchonete API",
+    "description": "Rotas do desafio tecnico. Rode na ordem: Ingredientes -> Hamburgueres -> Bebidas -> Pedidos (o pedido depende dos ids dos outros).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8082"
+    },
+    {
+      "key": "bebidaId",
+      "value": "1"
+    },
+    {
+      "key": "ingredienteId",
+      "value": "1"
+    },
+    {
+      "key": "hamburguerId",
+      "value": "1"
+    },
+    {
+      "key": "pedidoId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Bebidas (3.1)",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bebidas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bebidas"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Pesquisar por codigo ou descricao",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bebidas?termo=coca",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bebidas"
+              ],
+              "query": [
+                {
+                  "key": "termo",
+                  "value": "coca"
+                }
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "\"\""
+            }
+          }
+        },
+        {
+          "name": "Buscar por id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bebidas/{{bebidaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bebidas",
+                "{{bebidaId}}"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Criar - codigo automatico",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bebidas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bebidas"
+              ]
+            },
+            "description": "codigo null => o sistema gera BEB-0001, BEB-0002...",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": null,\n  \"descricao\": \"Coca-Cola Lata 350ml\",\n  \"precoUnitario\": 6.5,\n  \"contemAcucar\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Criar - codigo manual",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bebidas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bebidas"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"SUC-0001\",\n  \"descricao\": \"Suco de Laranja 500ml\",\n  \"precoUnitario\": 8.0,\n  \"contemAcucar\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "ERRO 409 - codigo duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bebidas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bebidas"
+              ]
+            },
+            "description": "Item 4 do edital: validacao de codigo duplicado",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"SUC-0001\",\n  \"descricao\": \"Duplicata\",\n  \"precoUnitario\": 1.0,\n  \"contemAcucar\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "ERRO 400 - formato de codigo invalido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bebidas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bebidas"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"coca350\",\n  \"descricao\": \"Formato errado\",\n  \"precoUnitario\": 1.0,\n  \"contemAcucar\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "ERRO 400 - campos obrigatorios",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bebidas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bebidas"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": null,\n  \"descricao\": \"\",\n  \"precoUnitario\": null,\n  \"contemAcucar\": null\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bebidas/{{bebidaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bebidas",
+                "{{bebidaId}}"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"BEB-0001\",\n  \"descricao\": \"Coca-Cola Lata 350ml\",\n  \"precoUnitario\": 7.0,\n  \"contemAcucar\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "ERRO 404 - id inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bebidas/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bebidas",
+                "999999"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Excluir",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bebidas/{{bebidaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bebidas",
+                "{{bebidaId}}"
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Ingredientes (3.1 / 3.4)",
+      "item": [
+        {
+          "name": "Listar todos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ingredientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ingredientes"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Listar SOMENTE adicionais",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ingredientes/adicionais",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ingredientes",
+                "adicionais"
+              ]
+            },
+            "description": "Requisito 3.4: so ingredientes com permiteAdicional=true. E esta rota que a tela de pedido consome."
+          }
+        },
+        {
+          "name": "Pesquisar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ingredientes?termo=queijo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ingredientes"
+              ],
+              "query": [
+                {
+                  "key": "termo",
+                  "value": "queijo"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Buscar por id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ingredientes/{{ingredienteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ingredientes",
+                "{{ingredienteId}}"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Criar - permite adicional",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ingredientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ingredientes"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": null,\n  \"descricao\": \"Queijo Cheddar\",\n  \"precoUnitario\": 3.0,\n  \"permiteAdicional\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Criar - NAO permite adicional",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ingredientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ingredientes"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": null,\n  \"descricao\": \"Alface\",\n  \"precoUnitario\": 0.5,\n  \"permiteAdicional\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ingredientes/{{ingredienteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ingredientes",
+                "{{ingredienteId}}"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"ING-0001\",\n  \"descricao\": \"Queijo Cheddar Fatiado\",\n  \"precoUnitario\": 3.5,\n  \"permiteAdicional\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Excluir",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ingredientes/{{ingredienteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ingredientes",
+                "{{ingredienteId}}"
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Hamburgueres (3.2)",
+      "item": [
+        {
+          "name": "Listar todos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/hamburgueres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "hamburgueres"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Pesquisar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/hamburgueres?termo=bacon",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "hamburgueres"
+              ],
+              "query": [
+                {
+                  "key": "termo",
+                  "value": "bacon"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Buscar por id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/hamburgueres/{{hamburguerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "hamburgueres",
+                "{{hamburguerId}}"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Criar - com ingredientes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/hamburgueres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "hamburgueres"
+              ]
+            },
+            "description": "Requisito 3.2: lista de ingredientes vinda do cadastro de Ingredientes",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": null,\n  \"descricao\": \"X-Bacon\",\n  \"valor\": 22.9,\n  \"ingredienteIds\": [\n    1,\n    2,\n    3\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "ERRO 409 - ingrediente inexistente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/hamburgueres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "hamburgueres"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": null,\n  \"descricao\": \"Invalido\",\n  \"valor\": 10.0,\n  \"ingredienteIds\": [\n    999999\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "ERRO 400 - sem ingredientes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/hamburgueres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "hamburgueres"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": null,\n  \"descricao\": \"Sem ingredientes\",\n  \"valor\": 10.0,\n  \"ingredienteIds\": []\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/hamburgueres/{{hamburguerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "hamburgueres",
+                "{{hamburguerId}}"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"HAM-0001\",\n  \"descricao\": \"X-Bacon Duplo\",\n  \"valor\": 28.9,\n  \"ingredienteIds\": [\n    1,\n    3\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Excluir",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/hamburgueres/{{hamburguerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "hamburgueres",
+                "{{hamburguerId}}"
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Pedidos (3.3 / 3.4 / 3.5)",
+      "item": [
+        {
+          "name": "Listar (resumo)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedidos"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Pesquisar por codigo, descricao ou cliente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pedidos?termo=Felipe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedidos"
+              ],
+              "query": [
+                {
+                  "key": "termo",
+                  "value": "Felipe"
+                }
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Buscar por id (detalhe + total)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pedidos/{{pedidoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedidos",
+                "{{pedidoId}}"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Criar - pedido completo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedidos"
+              ]
+            },
+            "description": "Cobre 3.3 (cliente + listas + observacoes), 3.4 (adicionais) e 3.5 (valorTotal na resposta)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Pedido balcao\",\n  \"clienteNome\": \"Felipe Alves\",\n  \"clienteEndereco\": \"Rua Teste, 123\",\n  \"clienteTelefone\": \"(18) 99999-0000\",\n  \"hamburgueres\": [\n    {\n      \"hamburguerId\": 1,\n      \"quantidade\": 1\n    }\n  ],\n  \"bebidas\": [\n    {\n      \"bebidaId\": 1,\n      \"quantidade\": 2\n    }\n  ],\n  \"adicionais\": [\n    {\n      \"ingredienteId\": 1,\n      \"quantidade\": 1\n    }\n  ],\n  \"observacoes\": [\n    {\n      \"texto\": \"sem cebola\"\n    },\n    {\n      \"texto\": \"entregar ate 20h\"\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "ERRO 409 - adicional nao habilitado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedidos"
+              ]
+            },
+            "description": "ingredienteId 2 = Alface (permiteAdicional=false). Requisito 3.4.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteNome\": \"Teste\",\n  \"clienteEndereco\": \"Rua X\",\n  \"clienteTelefone\": \"(18) 90000-0000\",\n  \"bebidas\": [\n    {\n      \"bebidaId\": 1,\n      \"quantidade\": 1\n    }\n  ],\n  \"adicionais\": [\n    {\n      \"ingredienteId\": 2,\n      \"quantidade\": 1\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "ERRO 409 - pedido sem itens",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedidos"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteNome\": \"Teste\",\n  \"clienteEndereco\": \"Rua X\",\n  \"clienteTelefone\": \"(18) 90000-0000\"\n}"
+            }
+          }
+        },
+        {
+          "name": "ERRO 400 - cliente obrigatorio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedidos"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteNome\": \"\",\n  \"clienteEndereco\": \"\",\n  \"clienteTelefone\": \"\",\n  \"bebidas\": [\n    {\n      \"bebidaId\": 1,\n      \"quantidade\": 1\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar - recalcula total",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pedidos/{{pedidoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedidos",
+                "{{pedidoId}}"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Pedido editado\",\n  \"clienteNome\": \"Felipe Alves\",\n  \"clienteEndereco\": \"Rua Teste, 123\",\n  \"clienteTelefone\": \"(18) 99999-0000\",\n  \"hamburgueres\": [\n    {\n      \"hamburguerId\": 1,\n      \"quantidade\": 2\n    }\n  ],\n  \"bebidas\": [],\n  \"adicionais\": [],\n  \"observacoes\": [\n    {\n      \"texto\": \"dobro de hamburguer\"\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Excluir",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pedidos/{{pedidoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pedidos",
+                "{{pedidoId}}"
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    }
+  ]
+}
